@@ -1,0 +1,46 @@
+﻿@using CinemaApp.Web.ViewModels.Cinema
+@model IEnumerable<CinemaIndexViewModel>
+
+@{
+    ViewData["Title"] = "Manage Ticket Availability";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="display-6 text-primary fw-bold">Manage Ticket Availability</h1>
+        <a asp-area="Manager" asp-controller="Home" asp-action="Index" class="btn btn-secondary fw-bold">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="row">
+        @foreach (var cinema in Model)
+        {
+            <div class="col-md-4">
+                <div class="card text-white @(cinema.HasMovies ? "bg-dark" : "bg-secondary") mb-3">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@cinema.Name</h5>
+                        <p class="card-text">@cinema.Location</p>
+
+                        @if (cinema.HasMovies)
+                        {
+                            <button class="btn btn-warning" onclick="openManageTicketsModal('@cinema.Id', '@cinema.Name', '@cinema.Location')">
+                                <i class="bi bi-ticket"></i> Manage Tickets
+                            </button>
+                        }
+                        else
+                        {
+                            <p class="text-muted">No movies in the program</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div id="manageTicketsModalContainer"></div>
+
+@section Scripts {
+    <script src="~/js/manageTickets.js"></script>
+}

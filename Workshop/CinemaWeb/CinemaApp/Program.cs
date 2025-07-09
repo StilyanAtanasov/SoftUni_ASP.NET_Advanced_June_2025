@@ -3,15 +3,18 @@ using CinemaApp.Services.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 namespace CinemaApp.Web;
 
+using System.Threading.Tasks;
 using CinemaApp.Data;
 using CinemaApp.Data.Repository;
 using CinemaApp.Data.Repository.Contracts;
+using CinemaApp.Data.Seeding;
+using CinemaApp.Web.Middlewares;
 using CinemaApp.Web.ViewModels.Movie;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +33,9 @@ public class Program
                 options.Password.RequireUppercase = false;
                 options.Password.RequiredLength = 3;
             })
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<CinemaAppDbContext>();
+
         builder.Services.AddControllersWithViews();
 
         builder.Services.AddScoped<IMovieRepository, MovieRepository>();
@@ -58,12 +63,18 @@ public class Program
 
         app.UseRouting();
 
+        app.UseAuthentication();
+        app.UseMiddleware<ManagerAccessMiddleware>();
         app.UseAuthorization();
 
         app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
         app.MapRazorPages();
+
+        using var scope = app.Services.CreateScope();
+        var serviceProvider = scope.ServiceProvider;
+        await RoleSeeding.SeedAsync(serviceProvider);
 
         app.Run();
     }

@@ -1,0 +1,35 @@
+﻿@model List<CinemaApp.Web.ViewModels.Cinema.ConfigureCinemasViewModel>
+
+@{
+    ViewData["Title"] = "Configure Programs";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="display-6 text-warning fw-bold">Configure Programs</h1>
+        <a asp-area="Manager" asp-controller="Home" asp-action="Index" class="btn btn-secondary fw-bold">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="row g-3">
+        @foreach (var cinema in Model)
+        {
+            <div class="col-md-4 col-lg-3">
+                <div class="card shadow-lg border-0 bg-dark text-white rounded-3 h-100">
+                    <img src="~/images/manager-card-cinema-logo.jpg" class="card-img-top rounded-top" alt="Cinema">
+                    <div class="card-body d-flex flex-column align-items-center text-center">
+                        <h6 class="card-title fw-bold">@cinema.Name</h6>
+                        <p class="card-text text-muted small">@cinema.Location</p>
+                        <div class="mt-auto w-100">
+                            <a asp-area="Manager" asp-controller="ProgramSetup" asp-action="Index" asp-route-cinemaId="@cinema.Id"
+                               class="btn btn-primary fw-bold shadow-sm w-100 py-1">
+                                <i class="bi bi-pencil-square"></i> Program Setup
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
