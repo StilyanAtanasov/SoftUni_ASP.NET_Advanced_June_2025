@@ -1,0 +1,16 @@
+@host = http://localhost:5008
+
+GET {{host}}/api/products
+Accept: application/json
+
+###
+
+POST {{host}}/api/products
+Content-Type: application/json
+
+{
+  "name": "New Product",
+  "description": "This is a new product."
+}
+
+###
