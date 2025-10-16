@@ -19,8 +19,6 @@ public class CinemaAppDbContext : IdentityDbContext
 
     public virtual DbSet<CinemaMovie> CinemasMovies { get; set; } = null!;
 
-    public virtual DbSet<UserTicket> UsersTickets { get; set; } = null!;
-
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

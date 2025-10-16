@@ -1,5 +1,5 @@
 ﻿using CinemaApp.Services.Core.Interfaces;
-using CinemaApp.Web.ViewModels.Movie;
+using CinemaApp.Web.ViewModels.User.Movie;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

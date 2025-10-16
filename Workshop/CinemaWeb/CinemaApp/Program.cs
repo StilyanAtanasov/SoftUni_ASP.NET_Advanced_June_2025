@@ -8,8 +8,11 @@ using CinemaApp.Data;
 using CinemaApp.Data.Repository;
 using CinemaApp.Data.Repository.Contracts;
 using CinemaApp.Data.Seeding;
+using CinemaApp.Services.Core.Admin;
+using CinemaApp.Services.Core.Admin.Interfaces;
+using CinemaApp.Services.Core.Manager;
+using CinemaApp.Services.Core.Manager.Contracts;
 using CinemaApp.Web.Middlewares;
-using CinemaApp.Web.ViewModels.Movie;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 public class Program
@@ -40,9 +43,23 @@ public class Program
 
         builder.Services.AddScoped<IMovieRepository, MovieRepository>();
         builder.Services.AddScoped<IWatchlistRepository, WatchlistRepository>();
+        builder.Services.AddScoped<ICinemaRepository, CinemaRepository>();
+        builder.Services.AddScoped<ICinemaMovieRepository, CinemaMovieRepository>();
+        builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 
         builder.Services.AddScoped<IMovieService, MovieService>();
         builder.Services.AddScoped<IWatchlistService, WatchlistService>();
+        builder.Services.AddScoped<ICinemaService, CinemaService>();
+        builder.Services.AddScoped<ITicketService, TicketService>();
+
+        builder.Services.AddScoped<ICinemaManagementService, CinemaManagementService>();
+        builder.Services.AddScoped<IMovieManagementService, MovieManagementService>();
+        builder.Services.AddScoped<IUserManagementService, UserManagementService>();
+
+        builder.Services.AddScoped<ICinemaConfigurationService, CinemaConfigurationService>();
+        builder.Services.AddScoped<IProgramSetupService, ProgramSetupService>();
+        builder.Services.AddScoped<IShowtimeSetupService, ShowtimeSetupService>();
+        builder.Services.AddScoped<IManagerTicketService, ManagerTicketService>();
 
         var app = builder.Build();
 
@@ -64,12 +81,22 @@ public class Program
         app.UseRouting();
 
         app.UseAuthentication();
+
         app.UseMiddleware<ManagerAccessMiddleware>();
+
         app.UseAuthorization();
+
+        app.UseMiddleware<AdminRedirectMiddleware>();
+        app.UseMiddleware<ManagerRedirectMiddleware>();
 
         app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
+
+        app.MapControllerRoute(
+            name: "areas",
+            pattern: "{area}/{controller=Home}/{action=Index}/{id?}");
+
         app.MapRazorPages();
 
         using var scope = app.Services.CreateScope();

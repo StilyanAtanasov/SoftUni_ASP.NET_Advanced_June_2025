@@ -34,4 +34,7 @@ public class Ticket
 
     [Required]
     public IdentityUser User { get; set; } = null!;
+
+    [Required]
+    public int Quantity { get; set; }
 }

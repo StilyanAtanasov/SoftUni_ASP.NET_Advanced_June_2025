@@ -29,7 +29,7 @@ public abstract class BaseRepository<TType, TId> : IRepository<TType, TId>
     {
         TType? entity = await _dbSet
             .FindAsync(id);
-
+        
         return entity;
     }
 
@@ -58,9 +58,7 @@ public abstract class BaseRepository<TType, TId> : IRepository<TType, TId>
         return entity;
     }
 
-    public IEnumerable<TType> GetAllReadonly() => _dbSet.AsNoTracking().ToArray();
-
-    public async Task<IEnumerable<TType>> GetAllReadonlyAsync() => await _dbSet.AsNoTracking().ToArrayAsync();
+    public IQueryable<TType> GetAllReadonly() => _dbSet.AsNoTracking();
     
     public IQueryable<TType> GetAllAttached() => _dbSet.AsQueryable();
     

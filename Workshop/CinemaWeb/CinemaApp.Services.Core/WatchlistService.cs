@@ -1,7 +1,7 @@
 ﻿using CinemaApp.Data.Models;
 using CinemaApp.Data.Repository.Contracts;
 using CinemaApp.Services.Core.Interfaces;
-using CinemaApp.Web.ViewModels.Watchlist;
+using CinemaApp.Web.ViewModels.User.Watchlist;
 using Microsoft.EntityFrameworkCore;
 using static CinemaApp.Data.Common.EntityConstraints.Movie;
 

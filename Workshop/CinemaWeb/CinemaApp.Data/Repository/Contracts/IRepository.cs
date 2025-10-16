@@ -16,9 +16,7 @@ public interface IRepository<TType, TId>
 
     Task<ICollection<TType>> GetCollectionByConditionsReadonlyAsync(Expression<Func<TType, bool>> predicate);
 
-    IEnumerable<TType> GetAllReadonly();
-
-    Task<IEnumerable<TType>> GetAllReadonlyAsync();
+    IQueryable<TType> GetAllReadonly();
 
     IQueryable<TType> GetAllAttached();
 

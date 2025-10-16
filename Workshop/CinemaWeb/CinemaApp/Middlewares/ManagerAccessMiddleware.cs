@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using static CinemaApp.GCommon.ApplicationConstants.Roles;
 
 namespace CinemaApp.Web.Middlewares;
 
@@ -16,12 +17,11 @@ public class ManagerAccessMiddleware
         {
             ClaimsPrincipal user = context.User;
 
-            if (!user.Identity?.IsAuthenticated ?? true || !user.IsInRole("manager"))
+            if (!user.Identity?.IsAuthenticated ?? true || !user.IsInRole(ManagerRoleName))
             {
                 context.Response.Redirect("/Home/AccessDenied");
                 return;
             }
-
         }
 
         await _next(context);

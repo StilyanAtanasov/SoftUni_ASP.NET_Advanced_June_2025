@@ -1,4 +1,4 @@
-﻿using CinemaApp.Web.ViewModels.Watchlist;
+﻿using CinemaApp.Web.ViewModels.User.Watchlist;
 
 namespace CinemaApp.Services.Core.Interfaces;
 

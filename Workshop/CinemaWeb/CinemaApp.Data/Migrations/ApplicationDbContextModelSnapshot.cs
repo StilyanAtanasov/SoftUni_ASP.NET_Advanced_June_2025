@@ -296,6 +296,9 @@ namespace CinemaApp.Data.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18, 6)");
 
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -324,21 +327,6 @@ namespace CinemaApp.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UsersMovies");
-                });
-
-            modelBuilder.Entity("CinemaApp.Data.Models.UserTicket", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<Guid>("TicketId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("UserId", "TicketId");
-
-                    b.HasIndex("TicketId");
-
-                    b.ToTable("UsersTickets");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -604,25 +592,6 @@ namespace CinemaApp.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Movie");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("CinemaApp.Data.Models.UserTicket", b =>
-                {
-                    b.HasOne("CinemaApp.Data.Models.Ticket", "Ticket")
-                        .WithMany()
-                        .HasForeignKey("TicketId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Ticket");
 
                     b.Navigation("User");
                 });
