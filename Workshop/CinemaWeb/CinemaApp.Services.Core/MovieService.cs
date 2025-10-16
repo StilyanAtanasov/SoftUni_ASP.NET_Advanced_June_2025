@@ -1,9 +1,9 @@
-﻿using System.Globalization;
-using CinemaApp.Data.Models;
+﻿using CinemaApp.Data.Models;
 using CinemaApp.Data.Repository.Contracts;
 using CinemaApp.Services.Core.Interfaces;
 using CinemaApp.Web.ViewModels.User.Movie;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using static CinemaApp.Data.Common.EntityConstraints.Movie;
 
 namespace CinemaApp.Services.Core;
@@ -11,25 +11,42 @@ namespace CinemaApp.Services.Core;
 public class MovieService : IMovieService
 {
     private readonly IMovieRepository _movieRepository;
+    private readonly IWatchlistService _watchlistService;
 
-    public MovieService(IMovieRepository movieRepository) => _movieRepository = movieRepository;
+    public MovieService(IMovieRepository movieRepository, IWatchlistService watchlistService)
+    {
+        _movieRepository = movieRepository;
+        _watchlistService = watchlistService;
+    }
 
-    public async Task<IEnumerable<MovieCardViewModel>> GetAllMoviesAsync() =>
-        await _movieRepository
+    public async Task<IEnumerable<MovieCardViewModel>> GetAllMoviesAsync(string? userId)
+    {
+        MovieCardViewModel[] movies = await _movieRepository
             .GetAllAttached()
             .AsNoTracking()
             .Where(m => !m.IsDeleted)
             .Select(m => new MovieCardViewModel
             {
-                Id = m.Id.ToString(),
+                Id = m.Id,
                 Title = m.Title,
                 Director = m.Director,
                 Duration = m.Duration.ToString(),
                 Genre = m.Genre,
                 ImageUrl = m.ImageUrl,
                 ReleaseDate = m.ReleaseDate.ToString("yyyy-MM-dd"),
+                IsInWatchlist = false // temporary placeholder
             })
             .ToArrayAsync();
+
+        if (userId != null)
+        {
+            ICollection<Guid> watchlistMovieIds = await _watchlistService.GetUserWatchlistMovieIdsAsync(userId);
+            foreach (MovieCardViewModel movie in movies)
+                movie.IsInWatchlist = watchlistMovieIds.Contains(movie.Id);
+        }
+
+        return movies;
+    }
 
     public async Task AddMovieAsync(MovieFormViewModel model)
     {
@@ -48,10 +65,10 @@ public class MovieService : IMovieService
         await _movieRepository.SaveChangesAsync();
     }
 
-    public async Task<MovieDetailsViewModel?> GetByIdAsync(string id)
+    public async Task<MovieDetailsViewModel?> GetByIdAsync(Guid id)
     {
         Movie? movie = await _movieRepository
-            .FirstOrDefaultReadonlyAsync(m => m.Id.ToString() == id && !m.IsDeleted);
+            .FirstOrDefaultReadonlyAsync(m => m.Id == id && !m.IsDeleted);
 
         if (movie == null) return null;
 
@@ -68,56 +85,5 @@ public class MovieService : IMovieService
         };
 
         return viewModel;
-    }
-
-    public async Task<MovieFormViewModel?> GetForEditByIdAsync(string id)
-    {
-        return await _movieRepository
-            .GetAllAttached()
-            .Where(m => m.Id.ToString() == id)
-            .Select(m => new MovieFormViewModel
-            {
-                Id = m.Id.ToString(),
-                Title = m.Title,
-                Genre = m.Genre,
-                Director = m.Director,
-                Description = m.Description,
-                Duration = m.Duration,
-                ReleaseDate = m.ReleaseDate.ToString(ReleaseDateFormat),
-                ImageUrl = m.ImageUrl
-            })
-            .FirstOrDefaultAsync();
-    }
-
-    public async Task EditAsync(string id, MovieFormViewModel model)
-    {
-        var movie = await _movieRepository.FirstOrDefaultAsync(m => m.Id.ToString() == id);
-        if (movie == null) return;
-
-        movie.Title = model.Title;
-        movie.Genre = model.Genre;
-        movie.Director = model.Director;
-        movie.Description = model.Description;
-        movie.Duration = model.Duration;
-        movie.ReleaseDate = DateTime.ParseExact(model.ReleaseDate, ReleaseDateFormat, CultureInfo.InvariantCulture);
-        movie.ImageUrl = model.ImageUrl;
-
-        await _movieRepository.SaveChangesAsync();
-    }
-
-    public async Task SoftDeleteAsync(string id)
-    {
-        Movie? movie = await _movieRepository.FirstOrDefaultAsync(m => m.Id.ToString() == id);
-        if (movie is { IsDeleted: false })
-        {
-            movie.IsDeleted = true;
-            await _movieRepository.SaveChangesAsync();
-        }
-    }
-
-    public async Task HardDeleteAsync(string id)
-    {
-        Movie? movie = await _movieRepository.FirstOrDefaultAsync(m => m.Id.ToString() == id);
-        if (movie != null) await _movieRepository.DeleteAsync(movie);
     }
 }

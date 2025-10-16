@@ -15,7 +15,7 @@ namespace CinemaApp.Web.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            IEnumerable<MovieCardViewModel> movies = await _service.GetAllMoviesAsync();
+            IEnumerable<MovieCardViewModel> movies = await _service.GetAllMoviesAsync(GetUserId());
             return View(movies);
         }
 
@@ -33,46 +33,12 @@ namespace CinemaApp.Web.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> DetailsPartial(Guid id)
         {
             MovieDetailsViewModel? model = await _service.GetByIdAsync(id);
             if (model == null) return NotFound();
 
-            return View(model);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Edit(string id)
-        {
-            MovieFormViewModel? model = await _service.GetForEditByIdAsync(id);
-            if (model == null) return NotFound();
-
-            return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Edit(string id, MovieFormViewModel model)
-        {
-            if (!ModelState.IsValid) return View(model);
-
-            await _service.EditAsync(id, model);
-            return RedirectToAction(nameof(Details), new { id });
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Delete(string id)
-        {
-            MovieDetailsViewModel? model = await _service.GetByIdAsync(id);
-            if (model == null) return NotFound();
-
-            return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            await _service.SoftDeleteAsync(id);
-            return RedirectToAction(nameof(Index));
+            return PartialView("_MovieDetailsPartial", model);
         }
     }
 }

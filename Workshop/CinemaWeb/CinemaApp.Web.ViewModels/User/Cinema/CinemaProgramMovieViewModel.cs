@@ -9,4 +9,6 @@ public class CinemaProgramMovieViewModel
     public string Director { get; set; } = null!;
 
     public string? ImageUrl { get; set; } = null!;
+
+    public bool IsInWatchlist { get; set; }
 }

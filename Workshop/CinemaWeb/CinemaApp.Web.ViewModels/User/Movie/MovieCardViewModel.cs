@@ -2,7 +2,7 @@
 
 public class MovieCardViewModel
 {
-    public string Id { get; set; } = null!;
+    public Guid Id { get; set; }
 
     public string Title { get; set; } = null!;
 
@@ -13,6 +13,8 @@ public class MovieCardViewModel
     public string Director { get; set; } = null!;
 
     public string Duration { get; set; } = null!;
+
+    public bool IsInWatchlist { get; set; }
 
     public string? ImageUrl { get; set; }
 }

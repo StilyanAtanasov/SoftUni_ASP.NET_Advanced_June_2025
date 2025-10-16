@@ -6,6 +6,6 @@ namespace CinemaApp.Services.Core.Interfaces
     {
         Task<ICollection<UsersCinemaIndexViewModel>> GetAllCinemasReadonlyAsync();
 
-        Task<CinemaProgramViewModel> GetCinemaProgramReadonlyAsync(Guid cinemaId);
+        Task<CinemaProgramViewModel> GetCinemaProgramReadonlyAsync(Guid cinemaId, string? userId);
     }
 }

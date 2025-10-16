@@ -14,8 +14,8 @@ public class WatchlistService : IWatchlistService
     public WatchlistService(IWatchlistRepository watchlistRepository) =>
         _watchlistRepository = watchlistRepository;
 
-    public async Task<IEnumerable<WatchlistViewModel>> GetUserWatchlistAsync(string userId) =>
-        await _watchlistRepository
+    public async Task<IEnumerable<WatchlistViewModel>> GetUserWatchlistAsync(string userId)
+        => await _watchlistRepository
             .GetAllAttached()
             .AsNoTracking()
             .Where(um => um.UserId == userId)
@@ -29,27 +29,35 @@ public class WatchlistService : IWatchlistService
             })
             .ToArrayAsync();
 
+    public async Task<ICollection<Guid>> GetUserWatchlistMovieIdsAsync(string userId)
+        => await _watchlistRepository
+            .GetAllAttached()
+            .AsNoTracking()
+            .Where(um => um.UserId == userId)
+            .Select(um => um.MovieId)
+            .ToArrayAsync();
+
     public async Task<bool> IsMovieInWatchlistAsync(string userId, Guid movieId) =>
         await _watchlistRepository
             .GetAllAttached()
             .AnyAsync(um => um.UserId == userId && um.MovieId == movieId);
 
-    public async Task AddToWatchlistAsync(string userId, string movieId)
+    public async Task AddToWatchlistAsync(string userId, Guid movieId)
     {
         UserMovie userMovie = new()
         {
             UserId = userId,
-            MovieId = Guid.Parse(movieId)
+            MovieId = movieId
         };
 
         await _watchlistRepository.AddAsync(userMovie);
         await _watchlistRepository.SaveChangesAsync();
     }
 
-    public async Task RemoveFromWatchlistAsync(string userId, string movieId)
+    public async Task RemoveFromWatchlistAsync(string userId, Guid movieId)
     {
         UserMovie? userMovie = await _watchlistRepository
-            .FirstOrDefaultAsync(um => um.MovieId == Guid.Parse(movieId) && um.UserId == userId);
+            .FirstOrDefaultAsync(um => um.MovieId == movieId && um.UserId == userId);
 
         if (userMovie != null) await _watchlistRepository.DeleteAsync(userMovie);
     }
