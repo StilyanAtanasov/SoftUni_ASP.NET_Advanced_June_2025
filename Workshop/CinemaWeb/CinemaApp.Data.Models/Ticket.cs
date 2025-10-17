@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.AspNetCore.Identity;
 using static CinemaApp.Data.Common.EntityConstraints.Ticket;
 
 namespace CinemaApp.Data.Models;
@@ -33,7 +33,7 @@ public class Ticket
     public string UserId { get; set; } = null!;
 
     [Required]
-    public IdentityUser User { get; set; } = null!;
+    public ApplicationUser User { get; set; } = null!;
 
     [Required]
     public int Quantity { get; set; }

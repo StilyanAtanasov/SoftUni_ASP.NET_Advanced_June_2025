@@ -1,20 +1,20 @@
-using CinemaApp.Services.Core;
-using CinemaApp.Services.Core.Interfaces;
-using Microsoft.EntityFrameworkCore;
-namespace CinemaApp.Web;
-
-using System.Threading.Tasks;
 using CinemaApp.Data;
+using CinemaApp.Data.Models;
 using CinemaApp.Data.Repository;
 using CinemaApp.Data.Repository.Contracts;
 using CinemaApp.Data.Seeding;
+using CinemaApp.Services.Core;
 using CinemaApp.Services.Core.Admin;
 using CinemaApp.Services.Core.Admin.Interfaces;
+using CinemaApp.Services.Core.Interfaces;
 using CinemaApp.Services.Core.Manager;
 using CinemaApp.Services.Core.Manager.Contracts;
 using CinemaApp.Web.Middlewares;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+
+namespace CinemaApp.Web;
+
 public class Program
 {
     public static async Task Main(string[] args)
@@ -27,7 +27,7 @@ public class Program
             options.UseSqlServer(connectionString));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-        builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+        builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
                 options.Password.RequireDigit = false;
@@ -90,18 +90,20 @@ public class Program
         app.UseMiddleware<ManagerRedirectMiddleware>();
 
         app.MapControllerRoute(
-            name: "default",
-            pattern: "{controller=Home}/{action=Index}/{id?}");
+           name: "areas",
+           pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
         app.MapControllerRoute(
-            name: "areas",
-            pattern: "{area}/{controller=Home}/{action=Index}/{id?}");
+            name: "default",
+            pattern: "{controller=Home}/{action=Index}/{id?}");
 
         app.MapRazorPages();
 
         using var scope = app.Services.CreateScope();
         var serviceProvider = scope.ServiceProvider;
-        await RoleSeeding.SeedAsync(serviceProvider);
+
+        await RoleSeeding.SeedRolesAsync(serviceProvider);
+        await RoleSeeding.SeedAdminAsync(serviceProvider);
 
         app.Run();
     }

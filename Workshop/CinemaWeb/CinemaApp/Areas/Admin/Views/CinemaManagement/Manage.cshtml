@@ -53,13 +53,13 @@
                                         <i class="bi bi-pencil-square"></i> Edit
                                     </a>
 
-                                    <form id="toggleDeleteForm-@cinema.Id" asp-action="ToggleDelete" asp-route-cinemaId="@cinema.Id" method="post" class=" d-inline">
-                                        <button type="submit" class="btn @(cinema.IsDeleted ? "btn-warning" : "btn-danger") btn-sm fw-bold">
+                                    <form id="toggleDeleteForm-@cinema.Id" asp-action="ToggleDelete" asp-route-cinemaId="@cinema.Id" method="post" class="d-inline">
+                                        <button type="button" class="btn @(cinema.IsDeleted ? "btn-warning" : "btn-danger") btn-sm fw-bold"
+                                                onclick="confirmToggleDelete('@cinema.Id', '@(cinema.IsDeleted ? "restore" : "delete")')">
                                             <i class="bi @(cinema.IsDeleted ? "bi-arrow-clockwise" : "bi-trash")"></i>
                                             @(cinema.IsDeleted ? "Restore" : "Delete")
                                         </button>
                                     </form>
-
                                 </div>
                             </td>
                         </tr>
@@ -69,3 +69,7 @@
         </div>
     }
 </div>
+
+@section Scripts {
+    <script src="~/js/admin/adminCinemaManagement.js" asp-append-version="true"></script>
+}

@@ -4,6 +4,7 @@ using CinemaApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CinemaApp.Data.Migrations
 {
     [DbContext(typeof(CinemaAppDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251017142904_ExtendIdentityUser")]
+    partial class ExtendIdentityUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,7 +116,7 @@ namespace CinemaApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cinemas", (string)null);
+                    b.ToTable("Cinemas");
                 });
 
             modelBuilder.Entity("CinemaApp.Data.Models.CinemaMovie", b =>
@@ -143,7 +146,7 @@ namespace CinemaApp.Data.Migrations
 
                     b.HasIndex("CinemaId");
 
-                    b.ToTable("CinemasMovies", (string)null);
+                    b.ToTable("CinemasMovies");
                 });
 
             modelBuilder.Entity("CinemaApp.Data.Models.Movie", b =>
@@ -197,7 +200,7 @@ namespace CinemaApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Movies", null, t =>
+                    b.ToTable("Movies", t =>
                         {
                             t.HasComment("movie in the system");
                         });
@@ -379,7 +382,7 @@ namespace CinemaApp.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Tickets", (string)null);
+                    b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("CinemaApp.Data.Models.UserMovie", b =>
@@ -399,7 +402,7 @@ namespace CinemaApp.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UsersMovies", (string)null);
+                    b.ToTable("UsersMovies");
                 });
 
             modelBuilder.Entity("CinemaApp.Data.Models.UserTicket", b =>
@@ -419,7 +422,7 @@ namespace CinemaApp.Data.Migrations
 
                     b.HasIndex("TicketId");
 
-                    b.ToTable("UserTicket", (string)null);
+                    b.ToTable("UserTicket");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

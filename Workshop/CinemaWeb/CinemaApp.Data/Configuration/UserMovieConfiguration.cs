@@ -13,7 +13,7 @@ public class UserMovieConfiguration : IEntityTypeConfiguration<UserMovie>
 
         builder
             .HasOne(um => um.User)
-            .WithMany()
+            .WithMany(u => u.UserMovies)
             .HasForeignKey(um => um.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
